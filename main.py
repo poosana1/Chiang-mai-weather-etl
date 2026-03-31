@@ -36,7 +36,7 @@ cursor = conn.cursor()
 cursor.execute("""
 CREATE TABLE IF NOT EXISTS weather_data (
     id SERIAL PRIMARY KEY,
-    time TIMESTAMP,
+    time TIMESTAMP UNIQUE,
     temperature FLOAT
 )
 """)
@@ -46,7 +46,9 @@ conn.commit()
 for item in listData:
     cursor.execute("""
     INSERT INTO weather_data (time, temperature) VALUES (%s, %s)
+    ON CONFLICT (time) DO NOTHING
     """, (item["time"], item["temperature"]))
+
 conn.commit()
 
 cursor.close()
